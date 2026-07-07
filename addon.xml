@@ -21,7 +21,6 @@
 - Improve type hints</news>
         <assets>
             <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
             <screenshot>resources/image-01.png</screenshot>
             <screenshot>resources/image-02.png</screenshot>
             <screenshot>resources/image-03.png</screenshot>
