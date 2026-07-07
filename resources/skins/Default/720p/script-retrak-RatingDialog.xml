@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<window> <!-- Trakt dialog redesign 0.16.01 by Piers -->
+<window> <!-- ReTrak dialog redesign 0.16.01 by Piers -->
 	<coordinates>
 		<posx>340</posx>
 		<posy>235</posy>
@@ -11,7 +11,7 @@
 			<posy>-500</posy>
 			<width>2200</width>
 			<height>2200</height>
-			<texture>trakt-bg-fade.png</texture>
+			<texture>retrak-bg-fade.png</texture>
 		</control>				
 		<control type="group">
 			<animation type="WindowOpen" reversible="false">
@@ -25,20 +25,20 @@
 			<!-- Dialogue content -->
 			<control type="group">
 				<control type="image">
-					<description>Trakt Background</description>
+					<description>ReTrak Background</description>
 					<posx>0</posx>
 					<posy>0</posy>
 					<width>600</width>
 					<height>250</height>
-					<texture>trakt-bg.png</texture>
+					<texture>retrak-bg.png</texture>
 				</control>
 				<control type="label" id="10011">
-					<description>Trakt Question</description>
+					<description>ReTrak Question</description>
 					<posx>580</posx>
 					<posy>13</posy>
 					<width>580</width>
 					<height>25</height>
-					<label>$ADDON[script.trakt 32026]</label>
+					<label>$ADDON[script.retrak 32026]</label>
 					<align>right</align>
 					<aligny>center</aligny>
 					<font>font14</font>

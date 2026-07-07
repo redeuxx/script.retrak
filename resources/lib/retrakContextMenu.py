@@ -6,7 +6,7 @@ from typing import List, Optional, Any
 from resources.lib.utilities import isMovie, isShow, isSeason, isEpisode
 from resources.lib.kodiUtilities import getString
 
-__addon__ = xbmcaddon.Addon("script.trakt")
+__addon__ = xbmcaddon.Addon("script.retrak")
 
 ACTION_LIST = 111
 DIALOG_IMAGE = 2
@@ -19,15 +19,15 @@ ACTION_CLOSE_LIST = [ACTION_PREVIOUS_MENU2, ACTION_PARENT_DIR, ACTION_PREVIOUS_M
 ACTION_ITEM_SELECT = [ACTION_SELECT_ITEM, ACTION_MOUSE_LEFT_CLICK]
 
 
-class traktContextMenu(xbmcgui.WindowXMLDialog):
+class retrakContextMenu(xbmcgui.WindowXMLDialog):
     action: Optional[str] = None
     buttons: List[str]
     media_type: str
 
     def __new__(cls, media_type: Optional[str] = None, buttons: Optional[List[str]] = None) -> Any:
-        return super(traktContextMenu, cls).__new__(
+        return super(retrakContextMenu, cls).__new__(
             cls,
-            "script-trakt-ContextMenu.xml",
+            "script-retrak-ContextMenu.xml",
             __addon__.getAddonInfo("path"),
             media_type=media_type,
             buttons=None,
@@ -36,7 +36,7 @@ class traktContextMenu(xbmcgui.WindowXMLDialog):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         self.buttons = kwargs["buttons"]
         self.media_type = kwargs["media_type"]
-        super(traktContextMenu, self).__init__()
+        super(retrakContextMenu, self).__init__()
 
     def onInit(self) -> None:
         mange_string = (

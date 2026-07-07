@@ -11,7 +11,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-__addon__ = xbmcaddon.Addon("script.trakt")
+__addon__ = xbmcaddon.Addon("script.retrak")
 
 
 def ratingCheck(media_type: str, items_to_rate: List[Dict], watched_time: float, total_time: float) -> None:
@@ -91,7 +91,7 @@ def rateMedia(media_type: str, itemsToRate: List[Dict], unrate: bool = False, ra
                 logger.debug("'%s' is being re-rated." % s)
 
         gui = RatingDialog(
-            "script-trakt-RatingDialog.xml",
+            "script-retrak-RatingDialog.xml",
             __addon__.getAddonInfo('path'),
             media_type,
             summary_info,

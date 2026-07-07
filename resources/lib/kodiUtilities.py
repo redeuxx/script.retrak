@@ -12,7 +12,7 @@ from resources.lib import utilities
 
 
 # read settings
-__addon__ = xbmcaddon.Addon("script.trakt")
+__addon__ = xbmcaddon.Addon("script.retrak")
 
 logger = logging.getLogger(__name__)
 
@@ -104,7 +104,7 @@ def checkExclusion(fullpath: str) -> bool:
 
     # Script exclusion
     if xbmcgui.Window(10000).getProperty(
-        "script.trakt.paused"
+        "script.retrak.paused"
     ) == "true" and getSettingAsBool("ExcludeScript"):
         logger.debug(
             "checkExclusion(): Video is playing via Script source, which is currently set as excluded location."
@@ -138,7 +138,7 @@ def kodiRpcToTraktMediaObject(type: str, data: Dict, mode: str = "collected") ->
             data["ids"] = data.pop("uniqueid")
         elif "imdbnumber" in data:
             id = data.pop("imdbnumber")
-            data["ids"] = utilities.guessBestTraktId(id, type)[0]
+            data["ids"] = utilities.guessBestReTrakId(id, type)[0]
         else:
             logger.debug("kodiRpcToTraktMediaObject(): No uniqueid found")
         data["rating"] = (
@@ -179,11 +179,11 @@ def kodiRpcToTraktMediaObject(type: str, data: Dict, mode: str = "collected") ->
                 episode["ids"]["tvdb"] = data["uniqueid"]["tvdb"]
             elif "unknown" in data["uniqueid"] and data["uniqueid"]["unknown"] != "":
                 episode["ids"].update(
-                    utilities.guessBestTraktId(data["uniqueid"]["unknown"], type)[0]
+                    utilities.guessBestReTrakId(data["uniqueid"]["unknown"], type)[0]
                 )
         elif "imdbnumber" in data:
             id = data.pop("imdbnumber")
-            data["ids"] = utilities.guessBestTraktId(id, type)[0]
+            data["ids"] = utilities.guessBestReTrakId(id, type)[0]
 
         if "lastplayed" in data:
             episode["watched_at"] = utilities.convertDateTimeToUTC(data["lastplayed"])
@@ -221,7 +221,7 @@ def kodiRpcToTraktMediaObject(type: str, data: Dict, mode: str = "collected") ->
             data["ids"] = data.pop("uniqueid")
         elif "imdbnumber" in data:
             id = data.pop("imdbnumber")
-            data["ids"] = utilities.guessBestTraktId(id, type)[0]
+            data["ids"] = utilities.guessBestReTrakId(id, type)[0]
         else:
             logger.debug("kodiRpcToTraktMediaObject(): No uniqueid found")
         del data["label"]
@@ -516,7 +516,7 @@ def getInfoLabelDetails(result: Dict) -> Tuple[str, Dict]:
         year = (
             xbmc.getInfoLabel("VideoPlayer.Year") or utilities.regex_year(showtitle)[1]
         )
-        video_ids = xbmcgui.Window(10000).getProperty("script.trakt.ids")
+        video_ids = xbmcgui.Window(10000).getProperty("script.retrak.ids")
         if video_ids:
             data["video_ids"] = json.loads(video_ids)
         logger.debug(

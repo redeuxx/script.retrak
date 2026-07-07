@@ -127,7 +127,7 @@ def findMediaObject(mediaObjectToMatch: Dict, listToSearch: List, matchByTitleAn
                 title=mediaObjectToMatch["title"],
                 year=mediaObjectToMatch["year"],
             )
-        # match only by title, as some items don't have a year on trakt
+        # match only by title, as some items don't have a year on retrak
         elif result is None and "title" in mediaObjectToMatch:
             result = __findInList(listToSearch, title=mediaObjectToMatch["title"])
 
@@ -263,7 +263,7 @@ def createError(ex: Exception) -> str:
     return template.format(type(ex).__name__, ex.args, traceback.format_exc())
 
 
-def guessBestTraktId(id: str, type: str) -> Tuple[Dict, str]:
+def guessBestReTrakId(id: str, type: str) -> Tuple[Dict, str]:
     data = {}
     id_type = ""
     if id.startswith("tt"):
@@ -476,7 +476,7 @@ def compareEpisodes(
 
             if show_col2:
                 season_diff = {}
-                # format the data to be easy to compare Trakt and KODI data
+                # format the data to be easy to compare ReTrak and KODI data
                 season_col1 = __getEpisodes(show_col1["seasons"])
                 season_col2 = __getEpisodes(show_col2["seasons"])
                 for season in season_col1:

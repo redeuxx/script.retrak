@@ -169,7 +169,7 @@ class traktService:
                 % (action, media_type, data.get("video_id"), data.get("dbid"))
             )
 
-            temp_ids, id_type = utilities.guessBestTraktId(
+            temp_ids, id_type = utilities.guessBestReTrakId(
                 str(data["video_id"]), media_type
             )
             best_id = temp_ids[id_type]
@@ -539,7 +539,7 @@ class traktPlayer(xbmc.Player):
                     return
 
                 custom_proprties = result["item"].get("customproperties")
-                if custom_proprties and "script.trakt.exclude" in custom_proprties:
+                if custom_proprties and "script.retrak.exclude" in custom_proprties:
                     logger.debug(
                         "[traktPlayer] onAVStarted() - '%s' has exclusion property, ignoring."
                         % _filename
@@ -950,8 +950,8 @@ class traktPlayer(xbmc.Player):
 
     # called when kodi stops playing a file
     def onPlayBackEnded(self) -> None:
-        xbmcgui.Window(10000).clearProperty("script.trakt.ids")
-        xbmcgui.Window(10000).clearProperty("script.trakt.paused")
+        xbmcgui.Window(10000).clearProperty("script.retrak.ids")
+        xbmcgui.Window(10000).clearProperty("script.retrak.paused")
         if self._playing:
             logger.debug("[traktPlayer] onPlayBackEnded() - %s" % self.isPlayingVideo())
             self._playing = False
@@ -961,8 +961,8 @@ class traktPlayer(xbmc.Player):
 
     # called when user stops kodi playing a file
     def onPlayBackStopped(self) -> None:
-        xbmcgui.Window(10000).clearProperty("script.trakt.ids")
-        xbmcgui.Window(10000).clearProperty("script.trakt.paused")
+        xbmcgui.Window(10000).clearProperty("script.retrak.ids")
+        xbmcgui.Window(10000).clearProperty("script.retrak.paused")
         if self._playing:
             logger.debug(
                 "[traktPlayer] onPlayBackStopped() - %s" % self.isPlayingVideo()

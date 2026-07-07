@@ -14,7 +14,7 @@
 			<posy>-500</posy>
 			<width>2200</width>
 			<height>2200</height>
-			<texture>trakt-bg-fade.png</texture>
+			<texture>retrak-bg-fade.png</texture>
 		</control>
 		<control type="group">
 			<control type="image">
@@ -23,7 +23,7 @@
 				<posy>0</posy>
 				<width>800</width>
 				<height>340</height>
-				<texture>trakt-auth-bg.png</texture>
+				<texture>retrak-auth-bg.png</texture>
 			</control>
 			<control type="label">
 				<description>header label</description>
@@ -31,7 +31,7 @@
 				<posy>15</posy>
 				<width>490</width>
 				<height>25</height>
-				<label>$ADDON[script.trakt 32153]</label>
+				<label>$ADDON[script.retrak 32153]</label>
 				<align>right</align>
 				<aligny>center</aligny>
 				<font>font14</font>
@@ -111,7 +111,7 @@
 				<height>40</height>
 				<align>center</align>
 				<aligny>center</aligny>
-				<label>$ADDON[script.trakt 32155]</label>
+				<label>$ADDON[script.retrak 32155]</label>
 				<font>font12_title</font>
 				<textcolor>AA000000</textcolor>
 				<texturenofocus>button-nofo.png</texturenofocus>
@@ -124,7 +124,7 @@
 				<height>40</height>
 				<align>center</align>
 				<aligny>center</aligny>
-				<label>$ADDON[script.trakt 32156]</label>
+				<label>$ADDON[script.retrak 32156]</label>
 				<textcolor>AA000000</textcolor>
 				<texturenofocus>button-nofo.png</texturenofocus>
 				<texturefocus>button-fo.png</texturefocus>				

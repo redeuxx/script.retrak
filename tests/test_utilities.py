@@ -173,16 +173,16 @@ def test_regex_year_year_2():
     assert utilities.regex_year("ShowTitle")[1] == ""
 
 
-def test_guessBestTraktId_IMDB():
-    assert utilities.guessBestTraktId("tt1431045", "movie")[0] == {"imdb": "tt1431045"}
+def test_guessBestReTrakId_IMDB():
+    assert utilities.guessBestReTrakId("tt1431045", "movie")[0] == {"imdb": "tt1431045"}
 
 
-def test_guessBestTraktId_TMDB():
-    assert utilities.guessBestTraktId("20077", "movie")[0] == {"tmdb": "20077"}
+def test_guessBestReTrakId_TMDB():
+    assert utilities.guessBestReTrakId("20077", "movie")[0] == {"tmdb": "20077"}
 
 
-def test_guessBestTraktId_Tvdb():
-    assert utilities.guessBestTraktId("4346770", "show")[0] == {"tvdb": "4346770"}
+def test_guessBestReTrakId_Tvdb():
+    assert utilities.guessBestReTrakId("4346770", "show")[0] == {"tvdb": "4346770"}
 
 
 def test_best_id_trakt():
@@ -635,7 +635,7 @@ def test_createError():
 
 
 def test_findEpisodeMatchInList():
-    # Mocking a structure that would be returned by Trakt API
+    # Mocking a structure that would be returned by ReTrak API
     class MockItem:
         def __init__(self, data, keys):
             self.data = data

@@ -6,7 +6,7 @@ from resources.lib import utilities
 from resources.lib import kodiUtilities
 from resources.lib import sqlitequeue
 from typing import Dict
-from resources.lib.traktContextMenu import traktContextMenu
+from resources.lib.retrakContextMenu import retrakContextMenu
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ def run() -> None:
     args = __getArguments()
     data = {}
 
-    xbmc.log("start trakt with arguments: %s" % args, xbmc.LOGINFO)
+    xbmc.log("start retrak with arguments: %s" % args, xbmc.LOGINFO)
 
     if args['action'] == 'auth_info':
         data['action'] = 'auth_info'
@@ -47,7 +47,7 @@ def run() -> None:
 
         buttons.append("sync")
 
-        contextMenu = traktContextMenu(media_type=media_type, buttons=buttons)
+        contextMenu = retrakContextMenu(media_type=media_type, buttons=buttons)
         contextMenu.doModal()
         _action = contextMenu.action
         del contextMenu
@@ -55,7 +55,7 @@ def run() -> None:
         if _action is None:
             return
 
-        logger.debug("'%s' selected from trakt.tv action menu" % _action)
+        logger.debug("'%s' selected from retrak.tv action menu" % _action)
         args['action'] = _action
 
     if args['action'] == 'sync':
@@ -284,7 +284,7 @@ def run() -> None:
                     return
 
             if len(data) > 1:
-                logger.debug("Marking '%s' with the following data '%s' as watched on Trakt.tv" % (
+                logger.debug("Marking '%s' with the following data '%s' as watched on ReTrak.tv" % (
                     media_type, str(data)))
                 data['action'] = 'markWatched'
 
@@ -389,7 +389,7 @@ def run() -> None:
                     return
 
             if len(data) > 1:
-                logger.debug("Adding '%s' with the following data '%s' to users watchlist on Trakt.tv"
+                logger.debug("Adding '%s' with the following data '%s' to users watchlist on ReTrak.tv"
                              % (media_type, str(data)))
                 data['action'] = 'addtowatchlist'
 

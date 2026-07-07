@@ -12,7 +12,7 @@
 			<posy>-500</posy>
 			<width>2200</width>
 			<height>2200</height>
-			<texture>trakt-bg-fade.png</texture>
+			<texture>retrak-bg-fade.png</texture>
 		</control>
 		<control type="group">
 			<control type="image">
@@ -21,7 +21,7 @@
 				<posy>0</posy>
 				<width>340</width>
 				<height>217</height>
-				<texture>trakt-context-bg.png</texture>
+				<texture>retrak-context-bg.png</texture>
 			</control>
 			<control type="list" id="111">
 				<posx>20</posx>

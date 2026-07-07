@@ -1,25 +1,22 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings version="1">
-	<section id="script.trakt">
+	<section id="script.retrak">
 		<category id="general" label="32000" help="">
 			<group id="1" label="">
-				<setting id="user" type="string" label="32163" help="">
+				<setting id="retrak_url" type="string" label="32001" help="">
+					<constraints>
+						<allowempty>false</allowempty>
+					</constraints>
+					<control type="edit" format="string" />
+					<default>https://retrak.tv</default>
+					<level>0</level>
+				</setting>
+				<setting id="retrak_api_key" type="string" label="32002" help="">
 					<constraints>
 						<allowempty>true</allowempty>
 					</constraints>
 					<control type="edit" format="string" />
 					<default />
-					<enable>false</enable>
-					<level>0</level>
-				</setting>
-				<setting id="Auth_Info" type="action" label="32153" help="32144">
-					<constraints>
-						<allowempty>true</allowempty>
-					</constraints>
-					<control type="button" format="action">
-						<close>true</close>
-					</control>
-					<data>RunScript(script.trakt, action=auth_info)</data>
 					<level>0</level>
 				</setting>
 				<setting id="authorization" type="string" label="authorization">

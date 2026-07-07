@@ -7,11 +7,11 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from resources.lib.obfuscation import deobfuscate, obfuscate
 
 def main():
-    client_id = os.environ.get("TRAKT_CLIENT_ID")
-    client_secret = os.environ.get("TRAKT_CLIENT_SECRET")
+    client_id = os.environ.get("RETRAK_CLIENT_ID")
+    client_secret = os.environ.get("RETRAK_CLIENT_SECRET")
 
     if not client_id or not client_secret:
-        print("Error: TRAKT_CLIENT_ID or TRAKT_CLIENT_SECRET not set.")
+        print("Error: RETRAK_CLIENT_ID or RETRAK_CLIENT_SECRET not set.")
         sys.exit(1)
 
     obfuscated_id = obfuscate(client_id)

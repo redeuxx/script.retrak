@@ -4,9 +4,7 @@ import logging
 import os
 import time
 from json import dumps, loads
-from typing import Any, Dict, List, Optional
-
-import xbmcaddon
+from typing import Any, Dict, List, Optional, Union
 from resources.lib import deviceAuthDialog
 from resources.lib.kodiUtilities import (
     checkAndConfigureProxy,
@@ -27,7 +25,7 @@ from trakt import Trakt
 from trakt.objects import Movie, Show
 
 # read settings
-__addon__ = xbmcaddon.Addon("script.trakt")
+__addon__ = xbmcaddon.Addon("script.retrak")
 __addonversion__ = __addon__.getAddonInfo("version")
 
 logger = logging.getLogger(__name__)
@@ -35,21 +33,34 @@ logger = logging.getLogger(__name__)
 
 class traktAPI(object):
     # Placeholders for build-time injection
-    __client_id: str = "TRAKT_CLIENT_ID_PLACEHOLDER"
-    __client_secret: str = "TRAKT_CLIENT_SECRET_PLACEHOLDER"
+    __client_id: Union[List[int], str] = [33, 118, 118, 119, 118, 122, 114, 112, 122, 38, 33, 38, 122, 36, 113, 115, 39, 123, 32, 39, 39, 119, 119, 113, 115, 122, 119, 116, 112, 39, 116, 39, 119, 38, 39, 32, 122, 119, 112, 118, 36, 119, 33, 35, 113, 39, 117, 117, 39, 115, 116, 117, 36, 38, 113, 32, 115, 33, 123, 33, 39, 113, 122, 114]
+    __client_secret: Union[List[int], str] = [38, 118, 119, 113, 32, 33, 114, 117, 32, 33, 36, 118, 112, 36, 117, 112, 39, 113, 123, 115, 119, 117, 115, 119, 35, 119, 112, 117, 119, 38, 123, 123, 38, 39, 122, 113, 122, 115, 36, 36, 114, 114, 117, 33, 122, 118, 38, 112, 114, 39, 122, 123, 39, 38, 115, 114, 117, 114, 113, 115, 114, 33, 122, 123]
     authorization: Optional[Dict] = None
     authDialog: Optional[deviceAuthDialog.DeviceAuthDialog] = None
 
     def __init__(self, force: bool = False) -> None:
-        logger.debug("Initializing.")
+        logger.debug("Initializing ReTrak API.")
 
         proxyURL = checkAndConfigureProxy()
         if proxyURL:
             Trakt.http.proxies = {"http": proxyURL, "https": proxyURL}
 
-        # Configure
-        client_id = os.environ.get("TRAKT_CLIENT_ID")
-        client_secret = os.environ.get("TRAKT_CLIENT_SECRET")
+        # Configure URL
+        retrak_url = getSetting("retrak_url")
+        if not retrak_url:
+            retrak_url = "https://retrak.tv"
+        retrak_url = retrak_url.strip().rstrip("/")
+        if not retrak_url.endswith("/api"):
+            retrak_url += "/api"
+
+        # Override Base URL for trakt.py
+        import trakt.core
+        trakt.core.BASE_URL = retrak_url + "/"
+        logger.debug("Setting ReTrak Base URL: %s" % trakt.core.BASE_URL)
+
+        # Configure Client Credentials
+        client_id = os.environ.get("RETRAK_CLIENT_ID")
+        client_secret = os.environ.get("RETRAK_CLIENT_SECRET")
 
         if not client_id or not client_secret:
             client_id = deobfuscate(self.__client_id)
@@ -60,107 +71,55 @@ class traktAPI(object):
             secret=client_secret,
         )
 
-        user_agent = "Kodi script.trakt/%s" % __addonversion__
+        user_agent = "Kodi script.retrak/%s" % __addonversion__
         if getattr(Trakt.http, "headers", None) is None:
-            Trakt.http.headers = {"User-Agent": user_agent}
-        else:
-            Trakt.http.headers["User-Agent"] = user_agent
+            Trakt.http.headers = {}
+
+        Trakt.http.headers["User-Agent"] = user_agent
+        Trakt.http.headers["retrak-api-version"] = "2"
+        Trakt.http.headers["retrak-api-key"] = client_id
 
         # Bind event
         Trakt.on("oauth.token_refreshed", self.on_token_refreshed)
 
-        Trakt.configuration.defaults.oauth(refresh=True)
-
-        if getSetting("authorization") and not force:
-            self.authorization = loads(getSetting("authorization"))
+        # Load ReTrak API key and construct authorization token
+        retrak_api_key = getSetting("retrak_api_key")
+        if retrak_api_key:
+            self.authorization = {
+                "access_token": retrak_api_key,
+                "token_type": "bearer",
+                "refresh_token": "",
+                "expires_in": 315360000,
+                "scope": "public",
+                "created_at": int(time.time())
+            }
+            setSetting("authorization", dumps(self.authorization))
         else:
+            self.authorization = None
+            setSetting("authorization", "")
             last_reminder = getSettingAsInt("last_reminder")
             now = int(time.time())
             if last_reminder >= 0 and last_reminder < now - (24 * 60 * 60) or force:
                 self.login()
 
     def login(self) -> None:
-        # Request new device code
-        with Trakt.configuration.http(timeout=90):
-            code = Trakt["oauth/device"].code()
-
-            if not code:
-                logger.debug("Error can not reach trakt")
-                notification(getString(32024), getString(32023))
-            else:
-                # Construct device authentication poller
-                poller = (
-                    Trakt["oauth/device"]
-                    .poll(**code)
-                    .on("aborted", self.on_aborted)
-                    .on("authenticated", self.on_authenticated)
-                    .on("expired", self.on_expired)
-                    .on("poll", self.on_poll)
-                )
-
-                # Start polling for authentication token
-                poller.start(daemon=False)
-
-                logger.debug(
-                    'Enter the code "%s" at %s to authenticate your account'
-                    % (code.get("user_code"), code.get("verification_url"))
-                )
-
-                self.authDialog = deviceAuthDialog.DeviceAuthDialog(
-                    "script-trakt-DeviceAuthDialog.xml",
-                    __addon__.getAddonInfo("path"),
-                    code=code.get("user_code"),
-                    url=code.get("verification_url"),
-                )
-                self.authDialog.doModal()
-
-                del self.authDialog
+        logger.debug("ReTrak API Key not configured.")
+        notification("ReTrak", "Please enter your ReTrak API Key in settings.", 6000)
 
     def on_aborted(self) -> None:
-        """Triggered when device authentication was aborted (either with `DeviceOAuthPoller.stop()`
-        or via the "poll" event)"""
-
-        logger.debug("Authentication aborted")
-        if self.authDialog:
-            self.authDialog.close()
+        pass
 
     def on_authenticated(self, token: Dict) -> None:
-        """Triggered when device authentication has been completed
-
-        :param token: Authentication token details
-        :type token: dict
-        """
-        self.authorization = token
-        setSetting("authorization", dumps(self.authorization))
-        logger.debug("Authentication complete: %r" % token)
-        if self.authDialog:
-            self.authDialog.close()
-        notification(getString(32157), getString(32152), 3000)
-        self.updateUser()
+        pass
 
     def on_expired(self) -> None:
-        """Triggered when the device authentication code has expired"""
-
-        logger.debug("Authentication expired")
-        if self.authDialog:
-            self.authDialog.close()
+        pass
 
     def on_poll(self, callback: Any) -> None:
-        """Triggered before each poll
-
-        :param callback: Call with `True` to continue polling, or `False` to abort polling
-        :type callback: func
-        """
-
-        # Continue polling
-        callback(True)
+        pass
 
     def on_token_refreshed(self, response: Dict) -> None:
-        # OAuth token refreshed, save token for future calls
-        self.authorization = response
-        setSetting("authorization", dumps(self.authorization))
-
-        logger.debug("Token refreshed")
+        pass
 
     def updateUser(self) -> None:
         user = self.getUser()
